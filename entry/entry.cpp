@@ -11,14 +11,13 @@
 
 void Injection(pid_t pid, std::string pattern, std::string newData) {
     bool stringFound = false;
-    HANDLE handle = OpenProcess(PROCESS_VM_READ | PROCESS_VM_WRITE | PROCESS_QUERY_INFORMATION, false, pid);
+    HANDLE handle = OpenProcess(PROCESS_ALL_ACCESS, false, pid);
     if (handle) {
         unsigned char *p = nullptr;
         MEMORY_BASIC_INFORMATION info;
 
         for (p = nullptr; VirtualQueryEx(handle, p, &info, sizeof(info)) == sizeof(info); p += info.RegionSize) {
             std::vector<char> buffer;
-            std::vector<char>::iterator pos;
 
             if (info.State == MEM_COMMIT && (info.Type == MEM_MAPPED || info.Type == MEM_PRIVATE)) {
                 SIZE_T bytes_read;
@@ -26,7 +25,6 @@ void Injection(pid_t pid, std::string pattern, std::string newData) {
 
                 buffer.resize(info.RegionSize);
                 ReadProcessMemory(handle, p, buffer.data(), info.RegionSize, &bytes_read);
-                buffer.resize(bytes_read);
 
                 offset = std::search(buffer.begin(), buffer.end(), pattern.begin(), pattern.end());
 
@@ -58,21 +56,13 @@ BOOL APIENTRY DllMain (HINSTANCE hInst     /* Library instance handle. */ ,
     switch (reason)
     {
         case DLL_PROCESS_ATTACH:
-            std::cout << "DLL_PROCESS_ATTACH" << std::endl;
             break;
-
-
         case DLL_THREAD_ATTACH:
-            std::cout << "DLL_THREAD_ATTACH" << std::endl;
             break;
-
         case DLL_THREAD_DETACH:
             Injection(getpid(), INITIAL_STRING, END_STRING);
-            std::cout << "DLL_THREAD_DETACH" << std::endl;
             break;
-
         case DLL_PROCESS_DETACH:
-            std::cout << "DLL_PROCESS_DETACH" << std::endl;
             break;
     }
 

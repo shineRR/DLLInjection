@@ -12,7 +12,7 @@ bool StaticInjection(DWORD pid);
 bool DynamicInjection(DWORD pid, char *dllName);
 
 int main() {
-    pid_t pid = 5472;
+    pid_t pid = 7568;
     char *s;
     s = (char *)calloc(1024, sizeof(char ));
     strcpy(s, "C:\\Users\\shine\\Desktop\\Dev\\DLLInjection\\entry\\cmake-build-debug\\libentry.dll");
@@ -54,7 +54,7 @@ bool InjectDLL(DWORD pid, char *dllName)
         WriteProcessMemory(handle, memAlloc, dllName, strlen(dllName) + 1, nullptr);
 
         HANDLE HThread = CreateRemoteThread(handle, nullptr, 0,
-                                            (LPTHREAD_START_ROUTINE) LoadLibraryA, (LPVOID) memAlloc, 0, nullptr);
+                                                    (LPTHREAD_START_ROUTINE) LoadLibraryA, (LPVOID) memAlloc, 0, nullptr);
 
         if (HThread == nullptr) {
             printf("error\n");
