@@ -12,13 +12,13 @@ bool StaticInjection(DWORD pid);
 bool DynamicInjection(DWORD pid, char *dllName);
 
 int main() {
-    pid_t pid = 7568;
+    pid_t pid = 3532;
     char *s;
     s = (char *)calloc(1024, sizeof(char ));
     strcpy(s, "C:\\Users\\shine\\Desktop\\Dev\\DLLInjection\\entry\\cmake-build-debug\\libentry.dll");
 //    StaticInjection(pid);
-//    DynamicInjection(pid, s);
-    InjectDLL(pid, s);
+    DynamicInjection(pid, s);
+//    InjectDLL(pid, s);
     return 0;
 }
 

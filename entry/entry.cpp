@@ -25,6 +25,7 @@ void Injection(pid_t pid, std::string pattern, std::string newData) {
 
                 buffer.resize(info.RegionSize);
                 ReadProcessMemory(handle, p, buffer.data(), info.RegionSize, &bytes_read);
+                buffer.resize(bytes_read);
 
                 offset = std::search(buffer.begin(), buffer.end(), pattern.begin(), pattern.end());
 
